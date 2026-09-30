@@ -1,0 +1,163 @@
+{
+  "titles": [
+    {
+      "title": "Ceramic Tile Dataset: 3301 Segmented Tiles with Shape and Colour Metrics"
+    }
+  ],
+  "creators": [
+    {
+      "name": "Reisach, Dominik",
+      "affiliation": "ETH Zurich",
+      "nameIdentifiers": [
+        {
+          "nameIdentifier": "0000-0002-2101-3463",
+          "nameIdentifierScheme": "ORCID"
+        }
+      ]
+    }
+  ],
+  "identifiers": [
+    {
+      "identifier": "10.3929/ethz-c-000806582",
+      "identifierType": "DOI"
+    },
+    {
+      "identifier": "https://hdl.handle.net/20.500.11850/806582",
+      "identifierType": "Handle"
+    }
+  ],
+  "publisher": "ETH Zurich Research Collection",
+  "publicationYear": 2026,
+  "resourceType": {
+    "resourceTypeGeneral": "Dataset"
+  },
+  "version": "1.0.0",
+  "language": "en",
+  "rightsList": [
+    {
+      "rights": "Creative Commons Attribution 4.0 International",
+      "rightsIdentifier": "CC-BY-4.0",
+      "rightsURI": "https://creativecommons.org/licenses/by/4.0/"
+    }
+  ],
+  "subjects": [
+    {
+      "subject": "ceramic tiles"
+    },
+    {
+      "subject": "mosaic"
+    },
+    {
+      "subject": "tile packing"
+    },
+    {
+      "subject": "shape analysis"
+    },
+    {
+      "subject": "instance segmentation"
+    },
+    {
+      "subject": "digital fabrication"
+    }
+  ],
+  "descriptions": [
+    {
+      "descriptionType": "Abstract",
+      "description": "Binary masks, mean colours and shape metrics for 3301 individual physical ceramic tiles. Tiles were photographed on a calibrated board, located with ArUco fiducials for metric scale, and segmented with a YOLO detector followed by SAM2. Each tile carries its cropped binary mask, bounding box, capture timestamp, pixel-to-millimetre scaling factor, mean RGB colour, a quantised palette colour, and six shape descriptors: area in pixels and square millimetres, eccentricity, solidity, aspect ratio, compactness and circularity. The dataset is the tile inventory used by the surface-mosaic packing method described in the related publication."
+    },
+    {
+      "descriptionType": "Methods",
+      "description": "Tiles were laid out individually on a flat board carrying ArUco fiducial markers (DICT_7X7_250, 50 mm) and photographed at 4032x3024 px. The fiducials give each capture a pixel-to-millimetre scale. Tiles were localised with a YOLO detector fine-tuned on this tile domain, and each detection was refined into a pixel-accurate mask with SAM2 (sam2.1_hiera_small). Each mask was cropped to its bounding box plus a 1 px margin. Shape descriptors (area, eccentricity, solidity, aspect ratio, compactness, circularity) were computed from the full-resolution mask with scikit-image regionprops; areas were converted to mm^2 using the per-capture scaling factor. The mean RGB of each tile surface was recorded and additionally quantised to the 12 physical glaze colours by HSV-aware matching (hue distance for chromatic tiles, value distance for achromatic ones)."
+    },
+    {
+      "descriptionType": "TechnicalInfo",
+      "description": "Generated with Python 3.11, PyTorch, SAM2, Ultralytics YOLO, OpenCV (ArUco), scikit-image, NumPy and h5py. Reuse requires only an HDF5 reader; the included plot_tiles.py needs Python >=3.11 with h5py, NumPy and Matplotlib (pinned in uv.lock)."
+    }
+  ],
+  "dates": [
+    {
+      "date": "2025-12-04",
+      "dateType": "Collected"
+    }
+  ],
+  "relatedIdentifiers": [
+    {
+      "relatedIdentifier": "TODO-DOI",
+      "relatedIdentifierType": "DOI",
+      "relationType": "IsSupplementTo",
+      "resourceTypeGeneral": "JournalArticle"
+    }
+  ],
+  "formats": ["application/x-hdf5", "text/csv"],
+  "schema": {
+    "masks/<id>": {
+      "shape": "varies",
+      "dtype": "bool",
+      "description": "One tight binary mask per tile, cropped to the tile plus a 1 px margin; the group member name is the zero-padded tile id."
+    },
+    "bboxes": {
+      "shape": "(N, 4)",
+      "dtype": "int32",
+      "description": "Position of each crop in the original 4032x3024 capture frame as [y0, y1, x0, x1], end-exclusive."
+    },
+    "colors": {
+      "shape": "(N, 3)",
+      "dtype": "uint8",
+      "description": "Mean RGB colour of the tile surface."
+    },
+    "true_colors": {
+      "shape": "(N, 3)",
+      "dtype": "uint8",
+      "description": "Colour quantised to the 12-colour physical palette (HSV-aware matching)."
+    },
+    "scaling_factors": {
+      "shape": "(N,)",
+      "dtype": "float32",
+      "units": "mm/px",
+      "description": "Pixel-to-millimetre scale from the ArUco fiducials."
+    },
+    "timestamps": {
+      "shape": "(N,)",
+      "dtype": "utf-8 string",
+      "description": "Capture time as YYYYMMDD_HHMMSS."
+    },
+    "area_px": {
+      "shape": "(N,)",
+      "dtype": "float32",
+      "units": "px",
+      "description": "Mask area in pixels."
+    },
+    "area_mm2": {
+      "shape": "(N,)",
+      "dtype": "float32",
+      "units": "mm^2",
+      "description": "area_px * scaling_factor^2."
+    },
+    "eccentricity": {
+      "shape": "(N,)",
+      "dtype": "float32",
+      "description": "Eccentricity of the equivalent ellipse; 0 is a circle."
+    },
+    "solidity": {
+      "shape": "(N,)",
+      "dtype": "float32",
+      "description": "Area divided by convex-hull area; 1 is convex."
+    },
+    "aspect_ratio": {
+      "shape": "(N,)",
+      "dtype": "float32",
+      "description": "Major axis divided by minor axis of the equivalent ellipse."
+    },
+    "compactness": {
+      "shape": "(N,)",
+      "dtype": "float32",
+      "description": "area / perimeter^2."
+    },
+    "circularity": {
+      "shape": "(N,)",
+      "dtype": "float32",
+      "description": "4*pi*compactness, clipped to [0, 1]; 1 is a circle."
+    }
+  },
+  "sizes": ["16.9 MB", "3301 tiles"]
+}

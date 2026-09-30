@@ -1,0 +1,13 @@
+.venv/
+__pycache__/
+.DS_Store
+xcuserdata/
+
+# model weights: both download into checkpoints/ on first use
+*.pt
+
+# pipeline output: captures, ArUco sheets and the full-frame working DB (tile_db.h5 reconstructs it)
+data/
+
+# pdfs
+*.pdf
